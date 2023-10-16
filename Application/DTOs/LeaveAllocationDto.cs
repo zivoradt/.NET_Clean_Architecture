@@ -11,7 +11,7 @@ namespace Application.DTOs
     {
         public int NumberOfDays { get; set; }
 
-        public LeaveType LeaveType { get; set; }
+        public LeaveTypeDto LeaveType { get; set; }
 
         public int LeaveTypeId { get; set; }
 

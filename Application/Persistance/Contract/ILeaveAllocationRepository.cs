@@ -9,5 +9,8 @@ namespace Application.Persistance.Contract
 {
     public interface ILeaveAllocationRepository : IGenericRepository<LeaveAllocation>
     {
+        Task<LeaveAllocation> GetLeaveAllocationWithDetails(int id);
+
+        Task<LeaveAllocation> GetLeaveAllocationWithDetails();
     }
 }

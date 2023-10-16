@@ -9,10 +9,23 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\LeaveRequest\Handlers\Commands\" />
+    <Folder Include="Features\LeaveRequest\Handlers\Queries\" />
+    <Folder Include="Features\LeaveRequest\Request\Commands\" />
+    <Folder Include="Features\LeaveAllocations\Handlers\Commands\" />
+    <Folder Include="Features\LeaveAllocations\Request\Commands\" />
+    <Folder Include="Features\LeaveRequest\Request\Queries\" />
+    <Folder Include="Features\LeaveTypes\Handlers\Commands\" />
+    <Folder Include="Features\LeaveTypes\Request\Commands\" />
   </ItemGroup>
 
 </Project>
