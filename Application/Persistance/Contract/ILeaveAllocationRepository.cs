@@ -11,6 +11,8 @@ namespace Application.Persistance.Contract
     {
         Task<LeaveAllocation> GetLeaveAllocationWithDetails(int id);
 
-        Task<LeaveAllocation> GetLeaveAllocationWithDetails();
+        Task<List<LeaveAllocation>> GetLeaveAllocationWithDetails();
+
+        Task<LeaveAllocation> Update(LeaveAllocation entity);
     }
 }

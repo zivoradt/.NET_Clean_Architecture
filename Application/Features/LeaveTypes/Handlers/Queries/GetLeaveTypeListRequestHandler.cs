@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.LeaveType;
 using Application.Features.LeaveTypes.Request.Queries;
 using Application.Persistance.Contract;
 using AutoMapper;

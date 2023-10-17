@@ -1,13 +1,15 @@
-﻿using Domain;
+﻿using Application.DTOs.Common;
+using Application.DTOs.LeaveType;
+using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs
+namespace Application.DTOs.LeaveAllocation
 {
-    public class LeaveAllocationDto
+    public class LeaveAllocationDto : BaseDto
     {
         public int NumberOfDays { get; set; }
 

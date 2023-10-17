@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.LeaveTypes.Request.Queries
+namespace Application.Features.LeaveTypes.Request.Commands
 {
-    public class GetLeaveTypeDetailRequest : IRequest<LeaveTypeDto>
+    public class UpdateLeaveTypeCommand : IRequest<Unit>
     {
-        public int Id { get; set; }
+        public LeaveTypeDto LeaveTypeDto { get; set; }
     }
 }

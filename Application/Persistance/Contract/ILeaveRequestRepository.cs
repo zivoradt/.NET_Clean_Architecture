@@ -9,5 +9,10 @@ namespace Application.Persistance.Contract
 {
     public interface ILeaveRequestRepository : IGenericRepository<LeaveRequest>
     {
+        Task<LeaveRequest> GetLeaveRequestWithDetails(int id);
+
+        Task<List<LeaveRequest>> GetLeaveRequestWithDetails();
+
+        Task ChangeRequestApprovalStatus(LeaveRequest leaveRequest, bool? Approved);
     }
 }

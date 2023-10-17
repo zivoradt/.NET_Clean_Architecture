@@ -21,7 +21,7 @@ namespace Domain
 
         public string RequestComment { get; set; }
 
-        public DateTime DateActioned { get; set; }
+        public DateTime? DateActioned { get; set; }
 
         public bool? Approved { get; set; }
 

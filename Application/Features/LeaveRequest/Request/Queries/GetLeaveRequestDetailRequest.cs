@@ -1,4 +1,4 @@
-﻿using Application.DTOs.LeaveType;
+﻿using Application.DTOs.LeaveRequest;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.LeaveTypes.Request.Queries
+namespace Application.Features.LeaveRequest.Request.Queries
 {
-    public class GetLeaveTypeDetailRequest : IRequest<LeaveTypeDto>
+    public class GetLeaveRequestDetailRequest : IRequest<LeaveRequestDto>
     {
         public int Id { get; set; }
     }
