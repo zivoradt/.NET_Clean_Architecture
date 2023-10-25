@@ -1,4 +1,7 @@
-﻿using Application.Features.LeaveAllocations.Request.Commands;
+﻿using Application.DTOs.LeaveAllocation.Validators;
+using Application.DTOs.LeaveRequest.Validators;
+using Application.Exceptions;
+using Application.Features.LeaveAllocations.Request.Commands;
 using Application.Persistance.Contract;
 using AutoMapper;
 using MediatR;
@@ -23,6 +26,15 @@ namespace Application.Features.LeaveAllocations.Handlers.Commands
 
         public async Task<Unit> Handle(UpdateLeaveAllocationCommand request, CancellationToken cancellationToken)
         {
+            var validator = new UpdateAllocationDtoValidator(_leaveAllocationRepository);
+
+            var validationResult = await validator.ValidateAsync(request.LeaveAllocationDto);
+
+            if (validationResult.IsValid == false)
+            {
+                throw new ValidationException(validationResult);
+            }
+
             var leaveAllocation = await _leaveAllocationRepository.Get(request.LeaveAllocationDto.Id);
 
             _mapper.Map(request.LeaveAllocationDto, leaveAllocation);

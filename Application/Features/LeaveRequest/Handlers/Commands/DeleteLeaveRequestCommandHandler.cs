@@ -1,6 +1,8 @@
-﻿using Application.Features.LeaveRequest.Request.Commands;
+﻿using Application.Exceptions;
+using Application.Features.LeaveRequest.Request.Commands;
 using Application.Persistance.Contract;
 using AutoMapper;
+using Domain;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -24,6 +26,11 @@ namespace Application.Features.LeaveRequest.Handlers.Commands
         public async Task<Unit> Handle(DeleteLeaveRequestCommand request, CancellationToken cancellationToken)
         {
             var leaveRequest = await _leaveRequestRepository.Get(request.Id);
+
+            if (leaveRequest == null)
+            {
+                throw new NotFoundException(nameof(LeaveRequest), request.Id);
+            }
 
             await _leaveRequestRepository.Delete(leaveRequest);
 

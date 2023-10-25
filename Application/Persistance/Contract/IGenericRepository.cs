@@ -14,6 +14,8 @@ namespace Application.Persistance.Contract
 
         Task<T> Add(T entity);
 
+        Task<bool> Exist(int id);
+
         Task<T> Delete(T entity);
 
         Task<T> Update(T entity);

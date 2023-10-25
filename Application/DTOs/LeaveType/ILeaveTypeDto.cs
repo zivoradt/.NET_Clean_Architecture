@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.LeaveType
 {
-    public class CreateLeaveTypeDto : ILeaveTypeDto
+    public interface ILeaveTypeDto
     {
-        public string Name { get; set; }
+        string Name { get; set; }
 
-        public int DefaultDays { get; set; }
+        int DefaultDays { get; set; }
     }
 }

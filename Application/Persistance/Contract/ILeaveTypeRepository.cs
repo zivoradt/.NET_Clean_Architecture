@@ -9,5 +9,6 @@ namespace Application.Persistance.Contract
 {
     public interface ILeaveTypeRepository : IGenericRepository<LeaveType>
     {
+        Task<LeaveType> Update(LeaveType enitity);
     }
 }

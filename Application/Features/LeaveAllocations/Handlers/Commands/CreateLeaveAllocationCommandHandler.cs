@@ -1,5 +1,8 @@
-﻿using Application.Features.LeaveAllocations.Request.Commands;
+﻿using Application.DTOs.LeaveAllocation.Validators;
+using Application.Exceptions;
+using Application.Features.LeaveAllocations.Request.Commands;
 using Application.Persistance.Contract;
+using Application.Responses;
 using AutoMapper;
 using MediatR;
 using System;
@@ -10,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.LeaveAllocations.Handlers.Commands
 {
-    public class CreateLeaveAllocationCommandHandler : IRequestHandler<CreateLeaveAllocationCommand, int>
+    public class CreateLeaveAllocationCommandHandler : IRequestHandler<CreateLeaveAllocationCommand, BaseCommandResponse>
     {
         private readonly ILeaveAllocationRepository _leaveAllocationRepository;
         private readonly IMapper _mapper;
@@ -21,13 +24,26 @@ namespace Application.Features.LeaveAllocations.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<int> Handle(CreateLeaveAllocationCommand request, CancellationToken cancellationToken)
+        public async Task<BaseCommandResponse> Handle(CreateLeaveAllocationCommand request, CancellationToken cancellationToken)
         {
-            var leaveAllocation = _mapper.Map<Domain.LeaveAllocation>(request.LeaveAllocationDto);
+            var validator = new CreateLeaveAllocationValidator(_leaveAllocationRepository);
 
-            leaveAllocation = await _leaveAllocationRepository.Add(leaveAllocation);
+            var validatorResult = await validator.ValidateAsync(request.LeaveAllocationDto);
 
-            return leaveAllocation.Id;
+            if (validatorResult.IsValid == false)
+            {
+                List<string> errors = validatorResult.Errors.Select(x => x.ErrorMessage).ToList();
+
+                return BaseCommandResponse.Failed(errors, "Allocation Failed");
+            }
+            else
+            {
+                var leaveAllocation = _mapper.Map<Domain.LeaveAllocation>(request.LeaveAllocationDto);
+
+                leaveAllocation = await _leaveAllocationRepository.Add(leaveAllocation);
+
+                return BaseCommandResponse.Successful(leaveAllocation.Id);
+            }
         }
     }
 }
