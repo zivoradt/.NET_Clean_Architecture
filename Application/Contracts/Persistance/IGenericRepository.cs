@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Persistance.Contract
+namespace Application.Contracts.Persistance
 {
     public interface IGenericRepository<T> where T : class
     {
@@ -16,8 +16,8 @@ namespace Application.Persistance.Contract
 
         Task<bool> Exist(int id);
 
-        Task<T> Delete(T entity);
+        Task Delete(T entity);
 
-        Task<T> Update(T entity);
+        Task Update(T entity);
     }
 }

@@ -14,3 +14,4 @@ namespace Application.DTOs.LeaveType.Validators
             Include(new ILeaveTypeDtoValidator());
         }
     }
+}

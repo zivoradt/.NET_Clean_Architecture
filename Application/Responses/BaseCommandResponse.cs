@@ -31,10 +31,10 @@ namespace Application.Responses
             return new BaseCommandResponse(default, MessagesEnum.Failed, false, message ?? "Creation Failed", errors);
         }
     }
-}
 
-public enum MessagesEnum
-{
-    Sucessfull = 1,
-    Failed = 2
+    public enum MessagesEnum
+    {
+        Sucessfull = 1,
+        Failed = 2
+    }
 }

@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.LeaveType.Validators;
 using Application.Exceptions;
 using Application.Features.LeaveTypes.Request.Commands;
-using Application.Persistance.Contract;
+using Application.Contracts.Persistance;
 using Application.Responses;
 using AutoMapper;
 using Domain;
@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.LeaveTypes.Handlers.Commands
 {
-    public class CreateLeaveTypeCommandHandler : IRequestHandler<CreateLeaveTypeCommand, BaseCommandResponse>
+    public class CreateLeaveTypeCommandHandler : IRequestHandler<CreateLeaveTypeCommand, int>
     {
         private readonly ILeaveTypeRepository _leaveTypeRepository;
         private readonly IMapper _mapper;
@@ -33,17 +33,13 @@ namespace Application.Features.LeaveTypes.Handlers.Commands
 
             if (validationResut.IsValid == false)
             {
-                List<string> errors = validationResut.Errors.Select(x => x.ErrorMessage).ToList();
+                throw new Application.Exceptions.ValidationException(validationResut);
 
-                return BaseCommandResponse.Failed(errors);
-            }
-            else
-            {
                 var leaveType = _mapper.Map<LeaveType>(request.LeaveTypeDto);
 
                 leaveType = await _leaveTypeRepository.Add(leaveType);
 
-                return BaseCommandResponse.Successful(leaveType.Id);
+                return leaveType.Id;
             }
         }
     }

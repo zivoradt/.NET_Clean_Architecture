@@ -5,14 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Persistance.Contract
+namespace Application.Contracts.Persistance
 {
     public interface ILeaveAllocationRepository : IGenericRepository<LeaveAllocation>
     {
         Task<LeaveAllocation> GetLeaveAllocationWithDetails(int id);
 
         Task<List<LeaveAllocation>> GetLeaveAllocationWithDetails();
-
-        Task<LeaveAllocation> Update(LeaveAllocation entity);
     }
 }

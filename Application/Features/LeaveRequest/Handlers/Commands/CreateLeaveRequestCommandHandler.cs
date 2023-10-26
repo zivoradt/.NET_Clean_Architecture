@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.LeaveRequest;
 using Application.Features.LeaveRequest.Request.Commands;
-using Application.Persistance.Contract;
+using Application.Contracts.Persistance;
 using AutoMapper;
 using MediatR;
 using Domain;
@@ -13,6 +13,8 @@ using Application.DTOs.LeaveAllocation.Validators;
 using Application.DTOs.LeaveType.Validators;
 using Application.Exceptions;
 using Application.Responses;
+using Application.Contracts.Infrastructure;
+using Application.Models;
 
 namespace Application.Features.LeaveRequest.Handlers.Commands
 {
@@ -20,11 +22,13 @@ namespace Application.Features.LeaveRequest.Handlers.Commands
     {
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _emailSender;
 
-        public CreateLeaveRequestCommandHandler(ILeaveRequestRepository leaveRequestRepository, IMapper mapper)
+        public CreateLeaveRequestCommandHandler(ILeaveRequestRepository leaveRequestRepository, IMapper mapper, IEmailSender emailSender)
         {
             _leaveRequestRepository = leaveRequestRepository;
             _mapper = mapper;
+            _emailSender = emailSender;
         }
 
         public async Task<BaseCommandResponse> Handle(CreateLeaveRequestCommand request, CancellationToken cancellationToken)
@@ -39,14 +43,22 @@ namespace Application.Features.LeaveRequest.Handlers.Commands
 
                 return BaseCommandResponse.Failed(errors);
             }
-            else
+
+            var leaveRequest = _mapper.Map<Domain.LeaveRequest>(request.LeaveRequestDto);
+
+            leaveRequest = await _leaveRequestRepository.Add(leaveRequest);
+
+            var email = Email.LeaveRequestCreated(request.LeaveRequestDto);
+
+            try
             {
-                var leaveRequest = _mapper.Map<Domain.LeaveRequest>(request.LeaveRequestDto);
-
-                leaveRequest = await _leaveRequestRepository.Add(leaveRequest);
-
-                return BaseCommandResponse.Successful(leaveRequest.Id);
+                await _emailSender.SendEmail(email);
             }
+            catch (Exception ex)
+            {
+            }
+
+            return BaseCommandResponse.Successful(leaveRequest.Id);
         }
     }
 }

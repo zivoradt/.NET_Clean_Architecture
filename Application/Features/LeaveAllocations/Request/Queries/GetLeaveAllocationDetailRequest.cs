@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.LeaveAllocation;
-using Application.Persistance.Contract;
+using Application.Contracts.Persistance;
 using AutoMapper;
 using MediatR;
 using System;

@@ -2,7 +2,7 @@
 using Application.DTOs.LeaveType.Validators;
 using Application.Exceptions;
 using Application.Features.LeaveRequest.Request.Commands;
-using Application.Persistance.Contract;
+using Application.Contracts.Persistance;
 using AutoMapper;
 using MediatR;
 using System;

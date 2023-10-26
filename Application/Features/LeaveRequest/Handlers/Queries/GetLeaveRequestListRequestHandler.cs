@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.LeaveRequest;
 using Application.Features.LeaveRequest.Request.Queries;
-using Application.Persistance.Contract;
+using Application.Contracts.Persistance;
 using AutoMapper;
 using MediatR;
 using System;
