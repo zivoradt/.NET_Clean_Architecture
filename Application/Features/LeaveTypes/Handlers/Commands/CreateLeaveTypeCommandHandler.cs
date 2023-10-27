@@ -26,7 +26,7 @@ namespace Application.Features.LeaveTypes.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<BaseCommandResponse> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
             var validator = new CreateLeaveTypeDtoValidator();
             var validationResut = await validator.ValidateAsync(request.LeaveTypeDto);
@@ -34,13 +34,12 @@ namespace Application.Features.LeaveTypes.Handlers.Commands
             if (validationResut.IsValid == false)
             {
                 throw new Application.Exceptions.ValidationException(validationResut);
-
-                var leaveType = _mapper.Map<LeaveType>(request.LeaveTypeDto);
-
-                leaveType = await _leaveTypeRepository.Add(leaveType);
-
-                return leaveType.Id;
             }
+            var leaveType = _mapper.Map<LeaveType>(request.LeaveTypeDto);
+
+            leaveType = await _leaveTypeRepository.Add(leaveType);
+
+            return leaveType.Id;
         }
     }
 }

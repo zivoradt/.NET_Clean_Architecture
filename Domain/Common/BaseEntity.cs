@@ -16,9 +16,6 @@ namespace Domain.Common
 
         public DateTime LastModifiedDate { get; set; }
 
-        public string LastModifiedBy
-        {
-            get; set;
-        }
+        public string LastModifiedBy { get; set; }
     }
 }
