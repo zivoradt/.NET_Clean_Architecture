@@ -1,7 +1,14 @@
+using Hanssens.Net;
+using MVC.Service;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddHttpClient<IClient, Client>(cl => cl.BaseAddress = new Uri("https://localhost:44318"));
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<ILocalStorage, LocalStorage>();
 
 var app = builder.Build();
 
