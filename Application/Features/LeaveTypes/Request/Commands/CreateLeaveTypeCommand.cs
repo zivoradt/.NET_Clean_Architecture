@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.LeaveTypes.Request.Commands
 {
-    public class CreateLeaveTypeCommand : IRequest<int>
+    public class CreateLeaveTypeCommand : IRequest<BaseCommandResponse>
     {
         public CreateLeaveTypeDto LeaveTypeDto { get; set; }
     }

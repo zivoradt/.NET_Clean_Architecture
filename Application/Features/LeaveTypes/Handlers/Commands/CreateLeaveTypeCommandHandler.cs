@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.LeaveTypes.Handlers.Commands
 {
-    public class CreateLeaveTypeCommandHandler : IRequestHandler<CreateLeaveTypeCommand, int>
+    public class CreateLeaveTypeCommandHandler : IRequestHandler<CreateLeaveTypeCommand, BaseCommandResponse>
     {
         private readonly ILeaveTypeRepository _leaveTypeRepository;
         private readonly IMapper _mapper;
@@ -26,20 +26,23 @@ namespace Application.Features.LeaveTypes.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<int> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
+        public async Task<BaseCommandResponse> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
             var validator = new CreateLeaveTypeDtoValidator();
             var validationResut = await validator.ValidateAsync(request.LeaveTypeDto);
 
             if (validationResut.IsValid == false)
             {
-                throw new Application.Exceptions.ValidationException(validationResut);
+                return BaseCommandResponse.Failed(validationResut.Errors.Select(x => x.ErrorMessage).ToList());
             }
-            var leaveType = _mapper.Map<LeaveType>(request.LeaveTypeDto);
+            else
+            {
+                var leaveType = _mapper.Map<LeaveType>(request.LeaveTypeDto);
 
-            leaveType = await _leaveTypeRepository.Add(leaveType);
+                leaveType = await _leaveTypeRepository.Add(leaveType);
 
-            return leaveType.Id;
+                return BaseCommandResponse.Successful(leaveType.Id);
+            }
         }
     }
 }

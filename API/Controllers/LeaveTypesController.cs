@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.LeaveType;
 using Application.Features.LeaveTypes.Request.Commands;
 using Application.Features.LeaveTypes.Request.Queries;
+using Application.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,7 +40,7 @@ namespace API.Controllers
 
         // POST api/<LeaveTypesController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] CreateLeaveTypeDto leaveTypeDto)
+        public async Task<ActionResult<BaseCommandResponse>> Post([FromBody] CreateLeaveTypeDto leaveTypeDto)
         {
             var command = new CreateLeaveTypeCommand { LeaveTypeDto = leaveTypeDto };
 
