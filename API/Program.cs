@@ -1,4 +1,6 @@
+using API;
 using Application;
+using Identity;
 using Infrastructure;
 using Persistence;
 
@@ -9,13 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureApplicationServices();
 builder.Services.ConfigureInfrastructureServices(builder.Configuration);
 builder.Services.ConfigurePersistenceService(builder.Configuration);
+builder.Services.ConfigureIdentityService(builder.Configuration);
+AddSwaggerDoc.AddSwagger(builder.Services);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "HR LeaveManagement.Api", Version = "v1" }));
 
 builder.Services.AddCors(o =>
 {
@@ -33,6 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR.LeaveManagement.Api v1"));
+app.UseAuthentication();
 
 app.UseHttpsRedirection();
 

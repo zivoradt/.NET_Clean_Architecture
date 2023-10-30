@@ -29,7 +29,7 @@ namespace Application.Features.LeaveTypes.Handlers.Commands
 
             var validationResult = await validator.ValidateAsync(request.LeaveTypeDto);
 
-            if (!validationResult.IsValid == false)
+            if (validationResult.IsValid == false)
             {
                 throw new ValidationException(validationResult);
             }

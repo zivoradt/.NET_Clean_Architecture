@@ -24,7 +24,8 @@ namespace MVC.Controllers
         // GET: LeaveTypeController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            return View();
+            var model = await _leaveTypeService.GetLeaveTypeDetails(id);
+            return View(model);
         }
 
         // GET: LeaveTypeController/Create
@@ -57,43 +58,53 @@ namespace MVC.Controllers
         // GET: LeaveTypeController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var model = await _leaveTypeService.GetLeaveTypeDetails(id);
+            return View(model);
         }
 
         // POST: LeaveTypeController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, LeaveTypeVM leaveTypeVM)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                var apiReponse = await _leaveTypeService.UpdateLeaveType(id, leaveTypeVM);
 
-        // GET: LeaveTypeController/Delete/5
-        public async Task<ActionResult> Delete(int id)
-        {
-            return View();
+                if (apiReponse.Success)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                ModelState.AddModelError("", apiReponse.ValidationErrors);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+            return View(leaveTypeVM);
         }
 
         // POST: LeaveTypeController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var apiResponse = await _leaveTypeService.DeleteLeaveType(id);
+
+                if (apiResponse.Success)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                ModelState.AddModelError("", apiResponse.ValidationErrors);
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", ex.Message);
             }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
