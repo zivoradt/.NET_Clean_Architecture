@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MVC.Models;
-using MVC.Service;
+using MVC.Services;
+using MVC.Services.Base;
 
 namespace MVC.Profiles
 {
@@ -10,6 +11,7 @@ namespace MVC.Profiles
         {
             CreateMap<CreateLeaveTypeDto, CreateLeaveTypeVM>().ReverseMap();
             CreateMap<LeaveTypeDto, LeaveTypeVM>().ReverseMap();
+            CreateMap<RegisterVM, RegistrationRequest>().ReverseMap();
         }
     }
 }

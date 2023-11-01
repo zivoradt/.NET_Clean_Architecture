@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace MVC.Service
+namespace MVC.Services.Base
 {
     public partial class Client : IClient
     {

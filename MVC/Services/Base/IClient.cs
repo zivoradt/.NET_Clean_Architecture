@@ -1,4 +1,4 @@
-﻿namespace MVC.Service
+﻿namespace MVC.Services.Base
 {
     public partial interface IClient
     {

@@ -12,6 +12,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Administrator")]
     public class LeaveTypesController : ControllerBase
     {
         private readonly IMediator _mediator;

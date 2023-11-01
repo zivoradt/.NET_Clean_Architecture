@@ -1,13 +1,13 @@
-﻿using Hanssens.Net;
-using MVC.Contracts;
-using MVC.Service;
+﻿using MVC.Contracts;
+using MVC.Services;
+using MVC.Services.Base;
 using System.Net.Http.Headers;
 
 namespace MVC.Services.Base
 {
     public class BaseHttpService
     {
-        private readonly ILocalStorageService _localStorage;
+        protected readonly ILocalStorageService _localStorage;
 
         protected IClient _client;
 

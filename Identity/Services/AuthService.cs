@@ -96,9 +96,48 @@ namespace Identity.Services
             return jwtSecurityToken;
         }
 
-        public Task<RegistrationResponse> Register(RegistrationRequest request)
+        public async Task<RegistrationResponse> Register(RegistrationRequest request)
         {
-            throw new NotImplementedException();
+            var existingUser = await _userManager.FindByNameAsync(request.Username);
+
+            if (existingUser != null)
+            {
+                throw new Exception($"Username '{request.Username}' already exist!");
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = request.Username,
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                EmailConfirmed = true
+            };
+
+            var existingEmail = await _userManager.FindByEmailAsync(request.Email);
+
+            if (existingEmail is null)
+            {
+                var result = await _userManager.CreateAsync(user, request.Password);
+
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "Employee");
+                    return new RegistrationResponse() { UserId = user.Id };
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine("API Error: " + error);
+                    }
+                    throw new Exception($"{result.Errors}");
+                }
+            }
+            else
+            {
+                throw new Exception($"Email {request.Email} already exists");
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MVC.Contracts;
 using MVC.Models;
-using MVC.Service;
+
 using MVC.Services.Base;
 
 namespace MVC.Services
@@ -26,7 +26,7 @@ namespace MVC.Services
                 var response = new Response<int>();
 
                 CreateLeaveTypeDto createLeaveTypeDto = _mapper.Map<CreateLeaveTypeDto>(leaveType);
-
+                AddBearerToken();
                 var apiResponse = await _httpClient.LeaveTypesPOSTAsync(createLeaveTypeDto);
                 if (apiResponse.Success)
                 {
@@ -52,6 +52,7 @@ namespace MVC.Services
         {
             try
             {
+                AddBearerToken();
                 await _httpClient.LeaveTypesDELETEAsync(id);
                 return new Response<int>() { Success = true };
             }
@@ -63,6 +64,7 @@ namespace MVC.Services
 
         public async Task<List<LeaveTypeVM>> GetAllTypes()
         {
+            AddBearerToken();
             var leaveTypes = await _httpClient.LeaveTypesAllAsync();
 
             return _mapper.Map<List<LeaveTypeVM>>(leaveTypes);
@@ -70,6 +72,7 @@ namespace MVC.Services
 
         public async Task<LeaveTypeVM> GetLeaveTypeDetails(int id)
         {
+            AddBearerToken();
             var leaveType = await _httpClient.LeaveTypesGETAsync(id);
 
             return _mapper.Map<LeaveTypeVM>(leaveType);
@@ -80,6 +83,7 @@ namespace MVC.Services
             try
             {
                 LeaveTypeDto leaveTypeDto = _mapper.Map<LeaveTypeDto>(leaveType);
+                AddBearerToken();
                 await _httpClient.LeaveTypesPUTAsync(leaveTypeDto);
 
                 return new Response<int>() { Success = true };
