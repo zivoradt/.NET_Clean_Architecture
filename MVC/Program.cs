@@ -16,6 +16,7 @@ builder.Services.AddTransient<IAuthentificationService, AuthenticationService>()
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddHttpClient<IClient, Client>(cl => cl.BaseAddress = new Uri("https://localhost:7019"));
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ILeaveAllocationService, LeaveAllocationService>();
 builder.Services.AddScoped<ILeaveTypeService, LeaveTypeService>();
 builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
 

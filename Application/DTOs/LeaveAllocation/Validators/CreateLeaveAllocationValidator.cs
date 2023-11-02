@@ -11,12 +11,21 @@ namespace Application.DTOs.LeaveAllocation.Validators
 {
     public class CreateLeaveAllocationValidator : AbstractValidator<CreateLeaveAllocationDto>
     {
-        private readonly ILeaveAllocationRepository _leaveAllocationRepository;
+        private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-        public CreateLeaveAllocationValidator(ILeaveAllocationRepository leaveAllocationRepository)
+        public CreateLeaveAllocationValidator(ILeaveTypeRepository leaveTypeRepository)
         {
-            _leaveAllocationRepository = leaveAllocationRepository;
-            Include(new ILeaveAllocationDtoValidator(_leaveAllocationRepository));
+            _leaveTypeRepository = leaveTypeRepository;
+
+            RuleFor(p => p.LeaveTypeId)
+                .GreaterThan(0)
+                .MustAsync(async (id, token) =>
+                {
+                    var leaveTypeExist = await _leaveTypeRepository.Exist(id);
+
+                    return leaveTypeExist;
+                })
+                .WithMessage("{Property.Name} doesnt exist!");
         }
     }
 }

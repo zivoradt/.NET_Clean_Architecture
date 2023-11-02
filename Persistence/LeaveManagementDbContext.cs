@@ -43,6 +43,12 @@ namespace Persistence
             }
         }
 
+        public override int SaveChanges()
+        {
+            SetTimestamps();
+            return base.SaveChanges();
+        }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             SetTimestamps();

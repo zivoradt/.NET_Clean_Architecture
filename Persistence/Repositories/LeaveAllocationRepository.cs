@@ -18,6 +18,17 @@ namespace Persistence.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task AddAllocations(List<LeaveAllocation> allocation)
+        {
+            await _dbContext.AddRangeAsync(allocation);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> AllocationExists(string userId, int leaveTypeId, int period)
+        {
+            return await _dbContext.LeaveAllocation.AnyAsync(q => q.EmployeeId == userId && q.LeaveTypeId == leaveTypeId && q.Period == period);
+        }
+
         public async Task<LeaveAllocation> GetLeaveAllocationWithDetails(int id)
         {
             var leaveAllocations = await _dbContext.LeaveAllocation.Include(x => x.LeaveType).FirstOrDefaultAsync(q => q.Id == id);
