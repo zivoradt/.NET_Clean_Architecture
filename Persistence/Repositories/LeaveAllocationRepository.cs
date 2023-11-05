@@ -42,5 +42,10 @@ namespace Persistence.Repositories
 
             return leaveAllocations;
         }
+
+        public async Task<LeaveAllocation> GetUserLeaveAllocations(string userId, int leaveTypeId)
+        {
+            return await _dbContext.LeaveAllocation.FirstOrDefaultAsync(q => q.EmployeeId == userId && q.LeaveTypeId == leaveTypeId);
+        }
     }
 }
