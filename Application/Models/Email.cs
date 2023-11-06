@@ -16,11 +16,11 @@ namespace Application.Models
 
         public string Body { get; set; }
 
-        public static Email LeaveRequestCreated(CreateLeaveRequestDto leaveRequest)
+        public static Email LeaveRequestCreated(CreateLeaveRequestDto leaveRequest, string emailAdress)
         {
             return new Email()
             {
-                To = "employee@org.com",
+                To = emailAdress,
                 Body = $"Youre leave request for {leaveRequest.StartDate} to {leaveRequest.EndDate} has been submitted successfully",
                 Subject = "Leave Request Submitted"
             };

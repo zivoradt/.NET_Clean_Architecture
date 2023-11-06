@@ -10,13 +10,13 @@ namespace Application.DTOs.LeaveRequest.Validators
 {
     public class UpdateLeaveRequestDtoValidator : AbstractValidator<UpdateLeaveRequestDto>
     {
-        private readonly ILeaveRequestRepository _leaveRequestRepository;
+        private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-        public UpdateLeaveRequestDtoValidator(ILeaveRequestRepository leaveRequestRepository)
+        public UpdateLeaveRequestDtoValidator(ILeaveTypeRepository leaveTypeRepository)
         {
-            _leaveRequestRepository = leaveRequestRepository;
+            _leaveTypeRepository = leaveTypeRepository;
 
-            Include(new ILeaveRequestDtoValidator(_leaveRequestRepository));
+            Include(new ILeaveRequestDtoValidator(_leaveTypeRepository));
 
             RuleFor(p => p.LeaveTypeId).NotNull().WithMessage("{PropertyName} must be present");
 

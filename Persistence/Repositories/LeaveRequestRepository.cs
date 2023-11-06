@@ -38,5 +38,13 @@ namespace Persistence.Repositories
 
             return leaveRequests;
         }
+
+        public async Task<List<LeaveRequest>> GetLeaveRequestWithDetails(string id)
+        {
+            var leaveRequests = await _dbContext.LeaveRequests.Where(q => q.RequestingEmployeeId == id)
+                .Include(q => q.LeaveType)
+                .ToListAsync();
+            return leaveRequests;
+        }
     }
 }

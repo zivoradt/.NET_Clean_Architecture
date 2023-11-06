@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<CookiePolicyOptions>(options =>
 options.MinimumSameSitePolicy = SameSiteMode.None);
+builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 builder.Services.AddTransient<IAuthentificationService, AuthenticationService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());

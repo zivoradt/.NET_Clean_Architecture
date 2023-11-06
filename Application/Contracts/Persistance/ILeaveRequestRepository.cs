@@ -14,5 +14,7 @@ namespace Application.Contracts.Persistance
         Task<List<LeaveRequest>> GetLeaveRequestWithDetails();
 
         Task ChangeRequestApprovalStatus(LeaveRequest leaveRequest, bool? Approved);
+
+        Task<List<LeaveRequest>> GetLeaveRequestWithDetails(string id);
     }
 }

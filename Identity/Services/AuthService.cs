@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Options;
 
+using Application.Constants;
+
 namespace Identity.Services
 {
     public class AuthService : IAuthService
@@ -77,7 +79,7 @@ namespace Identity.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("uid", user.Id)
+                new Claim(CustomClaimTypes.Uid, user.Id)
             }
             .Union(userClaims)
             .Union(roleClaims);

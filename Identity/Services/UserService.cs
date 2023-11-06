@@ -19,6 +19,18 @@ namespace Identity.Services
             _userManager = userManager;
         }
 
+        public async Task<Employee> GetEmployee(string id)
+        {
+            var employee = await _userManager.FindByIdAsync(id);
+            return new Employee
+            {
+                Email = employee.Email,
+                Id = employee.Id,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName
+            };
+        }
+
         public async Task<List<Employee>> GetEmployees()
         {
             var employees = await _userManager.GetUsersInRoleAsync("Employee");
