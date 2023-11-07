@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Persistance;
+using Application.DTOs.LeaveAllocation;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,6 +28,14 @@ namespace Persistence.Repositories
         public async Task<bool> AllocationExists(string userId, int leaveTypeId, int period)
         {
             return await _dbContext.LeaveAllocation.AnyAsync(q => q.EmployeeId == userId && q.LeaveTypeId == leaveTypeId && q.Period == period);
+        }
+
+        public Task<List<LeaveAllocation>> GetLeaveAllocationsWithDetails(string id)
+        {
+            var leaveAllocations = _dbContext.LeaveAllocation.Where(q => q.EmployeeId == id)
+                .Include(q => q.LeaveType).ToListAsync();
+
+            return leaveAllocations;
         }
 
         public async Task<LeaveAllocation> GetLeaveAllocationWithDetails(int id)

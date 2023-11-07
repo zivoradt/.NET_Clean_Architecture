@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Application.DTOs.LeaveAllocation;
+using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,7 @@ namespace Application.Contracts.Persistance
         Task AddAllocations(List<LeaveAllocation> allocation);
 
         Task<LeaveAllocation> GetUserLeaveAllocations(string userId, int leaveTypeId);
+
+        Task<List<LeaveAllocation>> GetLeaveAllocationsWithDetails(string id);
     }
 }

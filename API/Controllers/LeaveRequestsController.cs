@@ -22,9 +22,9 @@ namespace API.Controllers
 
         // GET: api/<LeaveRequestsController>
         [HttpGet]
-        public async Task<ActionResult<List<LeaveRequestDto>>> Get()
+        public async Task<ActionResult<List<LeaveRequestDto>>> Get(bool isLoggedInUser = false)
         {
-            var leaveRequest = await _mediator.Send(new GetLeaveRequestListRequest());
+            var leaveRequest = await _mediator.Send(new GetLeaveRequestListRequest() { IsLoggedInUser = isLoggedInUser });
 
             return Ok(leaveRequest);
         }

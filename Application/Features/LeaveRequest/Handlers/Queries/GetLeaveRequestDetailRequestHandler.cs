@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Contracts.Identity;
 
 namespace Application.Features.LeaveRequest.Handlers.Queries
 {
@@ -15,18 +16,24 @@ namespace Application.Features.LeaveRequest.Handlers.Queries
     {
         private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
-        public GetLeaveRequestDetailRequestHandler(ILeaveRequestRepository leaveRequestRepository, IMapper mapper)
+        public GetLeaveRequestDetailRequestHandler(ILeaveRequestRepository leaveRequestRepository,
+            IMapper mapper,
+            IUserService userService)
         {
             _leaveRequestRepository = leaveRequestRepository;
             _mapper = mapper;
+            _userService = userService;
         }
 
         public async Task<LeaveRequestDto> Handle(GetLeaveRequestDetailRequest request, CancellationToken cancellationToken)
         {
-            var leaveRequest = await _leaveRequestRepository.GetLeaveRequestWithDetails(request.Id);
+            var leaveRequest = _mapper.Map<LeaveRequestDto>(await _leaveRequestRepository.GetLeaveRequestWithDetails(request.Id));
 
-            return _mapper.Map<LeaveRequestDto>(leaveRequest);
+            leaveRequest.Employee = await _userService.GetEmployee(leaveRequest.RequestingEmployeeId);
+
+            return leaveRequest;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Common;
 using Application.DTOs.LeaveType;
+using Application.Models.Identity;
 using Domain;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,10 @@ namespace Application.DTOs.LeaveAllocation
         public int NumberOfDays { get; set; }
 
         public LeaveTypeDto LeaveType { get; set; }
+
+        public Employee Employee { get; set; }
+
+        public string EmployeeId { get; set; }
 
         public int LeaveTypeId { get; set; }
 
