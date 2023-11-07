@@ -13,9 +13,7 @@ namespace MVC.Profiles
             CreateMap<CreateLeaveTypeDto, CreateLeaveTypeVM>().ReverseMap();
             CreateMap<LeaveTypeDto, LeaveTypeVM>().ReverseMap();
             CreateMap<RegisterVM, RegistrationRequest>().ReverseMap();
-            CreateMap<CreateLeaveRequestDto, CreateLeaveRequestVM>()
-
-            .ReverseMap();
+            CreateMap<CreateLeaveRequestDto, CreateLeaveRequestVM>().ReverseMap();
         }
     }
 

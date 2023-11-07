@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain;
 using MVC.Contracts;
 using MVC.Models;
 using MVC.Services.Base;
@@ -16,15 +17,27 @@ namespace MVC.Services
             _mapper = mapper;
         }
 
+        public async Task ApproveLeaveRequest(int id, bool approved)
+        {
+            AddBearerToken();
+            try
+            {
+                var request = new ChangeLeaveRequestApprovalDto() { Id = id, Approved = approved };
+                await _client.ChangeapprovalAsync(id, request);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<Response<int>> CreateLeaveRequest(CreateLeaveRequestVM createLeaveRequestVM)
         {
             try
             {
                 var response = new Response<int>();
-
                 CreateLeaveRequestDto createLeaveRequest = _mapper.Map<CreateLeaveRequestDto>(createLeaveRequestVM);
                 AddBearerToken();
-
                 var apiResponse = await _client.LeaveRequestsPOSTAsync(createLeaveRequest);
 
                 if (apiResponse.Success)
@@ -48,6 +61,23 @@ namespace MVC.Services
         }
 
         public Task DeleteLeaveRequest(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AdminLeaveRequestViewVM> GetAdminLeaveRequestList()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<LeaveRequestVM> GetLeaveRequest(int id)
+        {
+            AddBearerToken();
+            var leaveRequest = await _client.LeaveAllocationsGETAsync(id);
+            return _mapper.Map<LeaveRequestVM>(leaveRequest);
+        }
+
+        public Task<EmployeeLeaveRequestViewVM> GetUserLeaveRequest()
         {
             throw new NotImplementedException();
         }

@@ -61,9 +61,9 @@ namespace API.Controllers
 
         // PUT api/<LeaveRequestsController>/changeapproval/5
         [HttpPut("changeapproval/{id}")]
-        public async Task<ActionResult> ChangeApproval(int id, [FromBody] UpdateLeaveRequestDto updateLeaveRequestDto)
+        public async Task<ActionResult> ChangeApproval(int id, [FromBody] ChangeLeaveRequestApprovalDto changeLeaveRequestApproval)
         {
-            var command = new UpdateLeaveRequestCommand { Id = id, UpdateLeaveRequestDto = updateLeaveRequestDto };
+            var command = new UpdateLeaveRequestCommand { Id = id, ChangeLeaveRequestApprovalDto = changeLeaveRequestApproval };
             var response = await _mediator.Send(command);
 
             return Ok(response);
