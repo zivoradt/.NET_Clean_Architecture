@@ -25,6 +25,10 @@ namespace Application.Features.LeaveAllocations.Handlers.Queries
         public async Task<LeaveAllocationDto> Handle(GetLeaveAllocationDetailRequest request, CancellationToken cancellationToken)
         {
             var leaveAllocation = await _leaveAllocationRepository.GetLeaveAllocationWithDetails(request.Id);
+            if (leaveAllocation == null)
+            {
+                Console.WriteLine("LEAVE IS NULL");
+            }
             return _mapper.Map<LeaveAllocationDto>(leaveAllocation);
         }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,11 +15,15 @@ namespace MVC.Controllers
     {
         private readonly ILeaveTypeService _leaveTypeService;
         private readonly ILeaveRequestService _leaveRequestService;
+        private readonly IMapper _mapper;
 
-        public LeaveRequestController(ILeaveTypeService leaveTypeService, ILeaveRequestService leaveRequestService)
+        public LeaveRequestController(ILeaveTypeService leaveTypeService,
+            ILeaveRequestService leaveRequestService,
+            IMapper mapper)
         {
             _leaveTypeService = leaveTypeService;
             _leaveRequestService = leaveRequestService;
+            _mapper = mapper;
         }
 
         // GET: LeaveRequestController/Create
@@ -63,10 +68,35 @@ namespace MVC.Controllers
             return View(createLeaveRequestVM);
         }
 
-        // GET: LeaveRequestController/Edit/5
-        public ActionResult Edit(int id)
+        [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult> Index()
         {
-            return View();
+            Console.WriteLine("LeaveRequest");
+            var model = await _leaveRequestService.GetAdminLeaveRequestList();
+            return View(model);
+        }
+
+        public async Task<ActionResult> Details(int id)
+        {
+            var model = await _leaveRequestService.GetLeaveRequest(id);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult> ApproveRequest(int id, bool approved)
+        {
+            try
+            {
+                await _leaveRequestService.ApproveLeaveRequest(id, approved);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: LeaveRequestController/Edit/5

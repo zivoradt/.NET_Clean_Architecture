@@ -65,15 +65,26 @@ namespace MVC.Services
             throw new NotImplementedException();
         }
 
-        public Task<AdminLeaveRequestViewVM> GetAdminLeaveRequestList()
+        public async Task<AdminLeaveRequestViewVM> GetAdminLeaveRequestList()
         {
-            throw new NotImplementedException();
+            AddBearerToken();
+            var leaveRequests = await _client.LeaveRequestsAllAsync(isLoggedInUser: false);
+
+            var model = new AdminLeaveRequestViewVM
+            {
+                TotalRequests = leaveRequests.Count,
+                ApprovedRequests = leaveRequests.Count(q => q.Approved == true),
+                PendingRequests = leaveRequests.Count(q => q.Approved == null),
+                RejectedRequests = leaveRequests.Count(q => q.Approved == true),
+                LeaveRequests = _mapper.Map<List<LeaveRequestVM>>(leaveRequests)
+            };
+            return model;
         }
 
         public async Task<LeaveRequestVM> GetLeaveRequest(int id)
         {
             AddBearerToken();
-            var leaveRequest = await _client.LeaveAllocationsGETAsync(id);
+            var leaveRequest = await _client.LeaveRequestsGETAsync(id);
             return _mapper.Map<LeaveRequestVM>(leaveRequest);
         }
 

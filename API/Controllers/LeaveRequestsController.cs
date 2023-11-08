@@ -24,6 +24,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<LeaveRequestDto>>> Get(bool isLoggedInUser = false)
         {
+            Console.WriteLine("API REQUEST");
             var leaveRequest = await _mediator.Send(new GetLeaveRequestListRequest() { IsLoggedInUser = isLoggedInUser });
 
             return Ok(leaveRequest);
