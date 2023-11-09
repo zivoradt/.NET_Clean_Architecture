@@ -9,9 +9,6 @@ namespace MVC.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Date Requested")]
-        public DateTime DateRequested { get; set; }
-
         [Display(Name = "Date Actioned")]
         public DateTime DateActioned { get; set; }
 

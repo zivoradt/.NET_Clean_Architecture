@@ -22,7 +22,6 @@ namespace Persistence.Repositories
         public async Task AddAllocations(List<LeaveAllocation> allocation)
         {
             await _dbContext.AddRangeAsync(allocation);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> AllocationExists(string userId, int leaveTypeId, int period)
@@ -55,6 +54,11 @@ namespace Persistence.Repositories
         public async Task<LeaveAllocation> GetUserLeaveAllocations(string userId, int leaveTypeId)
         {
             return await _dbContext.LeaveAllocation.FirstOrDefaultAsync(q => q.EmployeeId == userId && q.LeaveTypeId == leaveTypeId);
+        }
+
+        public async Task<List<LeaveAllocation>> GetAllLeaveAllocationsForUser(string userId, int leaveTypeId)
+        {
+            return await _dbContext.LeaveAllocation.Where(x => x.EmployeeId == userId && x.LeaveTypeId == leaveTypeId).ToListAsync();
         }
     }
 }

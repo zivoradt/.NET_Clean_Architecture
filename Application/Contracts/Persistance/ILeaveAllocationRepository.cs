@@ -21,5 +21,7 @@ namespace Application.Contracts.Persistance
         Task<LeaveAllocation> GetUserLeaveAllocations(string userId, int leaveTypeId);
 
         Task<List<LeaveAllocation>> GetLeaveAllocationsWithDetails(string id);
+
+        Task<List<LeaveAllocation>> GetAllLeaveAllocationsForUser(string userId, int leaveTypeId);
     }
 }

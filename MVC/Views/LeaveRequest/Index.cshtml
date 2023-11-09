@@ -78,9 +78,7 @@
             <th>
                 Leave Type
             </th>
-            <th>
-                Date Requested
-            </th>
+            
 
             <th>
                 Approval Status
@@ -105,9 +103,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.LeaveType.Name)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateRequested)
-                </td>
+                
                 <td>
                     @if (item.Cancelled)
                     {

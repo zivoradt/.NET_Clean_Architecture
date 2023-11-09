@@ -17,10 +17,6 @@ namespace Application.DTOs.LeaveRequest.Validators
             _leaveTypeRepository = leaveTypeRepository;
 
             Include(new ILeaveRequestDtoValidator(_leaveTypeRepository));
-
-            RuleFor(p => p.LeaveTypeId).NotNull().WithMessage("{PropertyName} must be present");
-
-            RuleFor(p => p.RequestComment).NotEmpty().WithMessage("{PropertyName} must be present");
         }
     }
 }

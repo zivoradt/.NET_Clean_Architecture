@@ -60,7 +60,6 @@ namespace Application.Features.LeaveRequest.Handlers.Queries
 
                 foreach (var req in requests)
                 {
-                    Console.WriteLine(req.Id);
                     req.Employee = await _userService.GetEmployee(req.RequestingEmployeeId);
                 }
             }

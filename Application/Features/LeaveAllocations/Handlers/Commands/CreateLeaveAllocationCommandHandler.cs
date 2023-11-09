@@ -17,29 +17,24 @@ namespace Application.Features.LeaveAllocations.Handlers.Commands
 {
     public class CreateLeaveAllocationCommandHandler : IRequestHandler<CreateLeaveAllocationCommand, BaseCommandResponse>
     {
-        private readonly ILeaveAllocationRepository _leaveAllocationRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
-        private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-        public CreateLeaveAllocationCommandHandler(ILeaveAllocationRepository leaveAllocationRepository, IMapper mapper, IUserService userService, ILeaveTypeRepository leaveTypeRepository)
+        public CreateLeaveAllocationCommandHandler(IUnitOfWork unitOfWork,
+            IMapper mapper, IUserService userService
+            )
         {
-            _leaveAllocationRepository = leaveAllocationRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userService = userService;
-            _leaveTypeRepository = leaveTypeRepository;
         }
 
         public async Task<BaseCommandResponse> Handle(CreateLeaveAllocationCommand request, CancellationToken cancellationToken)
         {
-            var validator = new CreateLeaveAllocationValidator(_leaveTypeRepository);
+            var validator = new CreateLeaveAllocationValidator(_unitOfWork.LeaveTypeRepository);
 
             var validatorResult = await validator.ValidateAsync(request.LeaveAllocationDto);
-
-            foreach (var error in validatorResult.Errors)
-            {
-                Console.WriteLine(error.ErrorMessage);
-            }
 
             if (validatorResult.IsValid == false)
             {
@@ -50,7 +45,7 @@ namespace Application.Features.LeaveAllocations.Handlers.Commands
             }
             else
             {
-                var leaveType = await _leaveTypeRepository.Get(request.LeaveAllocationDto.LeaveTypeId);
+                var leaveType = await _unitOfWork.LeaveTypeRepository.Get(request.LeaveAllocationDto.LeaveTypeId);
 
                 var employees = await _userService.GetEmployees();
 
@@ -60,7 +55,8 @@ namespace Application.Features.LeaveAllocations.Handlers.Commands
 
                 foreach (var employee in employees)
                 {
-                    if (await _leaveAllocationRepository.AllocationExists(employee.Id, leaveType.Id, period))
+                    if (await _unitOfWork.LeaveAllocationRepository.AllocationExists(employee.Id, leaveType.Id, period))
+
                         continue;
                     allocations.Add(new LeaveAllocation
                     {
@@ -71,7 +67,9 @@ namespace Application.Features.LeaveAllocations.Handlers.Commands
                     });
                 }
 
-                await _leaveAllocationRepository.AddAllocations(allocations);
+                await _unitOfWork.LeaveAllocationRepository.AddAllocations(allocations);
+
+                await _unitOfWork.Save();
 
                 return BaseCommandResponse.Successful(1);
             }

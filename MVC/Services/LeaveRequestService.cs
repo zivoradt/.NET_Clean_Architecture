@@ -22,7 +22,7 @@ namespace MVC.Services
             AddBearerToken();
             try
             {
-                var request = new ChangeLeaveRequestApprovalDto() { Id = id, Approved = approved };
+                var request = new ChangeLeaveRequestApprovalDto { Id = id, Approved = approved };
                 await _client.ChangeapprovalAsync(id, request);
             }
             catch (Exception ex)
@@ -85,6 +85,10 @@ namespace MVC.Services
         {
             AddBearerToken();
             var leaveRequest = await _client.LeaveRequestsGETAsync(id);
+            if (leaveRequest != null)
+            {
+                Console.WriteLine(leaveRequest);
+            }
             return _mapper.Map<LeaveRequestVM>(leaveRequest);
         }
 

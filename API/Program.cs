@@ -1,4 +1,5 @@
 using API;
+using API.Middleware;
 using Application;
 using Identity;
 using Infrastructure;
@@ -32,6 +33,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HR.LeaveManagement.Api v1"));
 app.UseAuthentication();

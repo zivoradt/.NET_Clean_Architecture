@@ -22,7 +22,6 @@ namespace Persistence.Repositories
         {
             leaveRequest.Approved = Approved;
             _dbContext.Entry(leaveRequest).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<LeaveRequest> GetLeaveRequestWithDetails(int id)

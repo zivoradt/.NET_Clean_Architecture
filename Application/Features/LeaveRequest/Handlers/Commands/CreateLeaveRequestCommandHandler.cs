@@ -19,47 +19,54 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
 using System.Reflection;
+using Application.Constants;
 
 namespace Application.Features.LeaveRequest.Handlers.Commands
 {
     public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveRequestCommand, BaseCommandResponse>
     {
-        private readonly ILeaveRequestRepository _leaveRequestRepository;
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ILeaveAllocationRepository _leaveAllocationRepository;
-        private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-        public CreateLeaveRequestCommandHandler(ILeaveRequestRepository leaveRequestRepository,
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CreateLeaveRequestCommandHandler(
             IMapper mapper, IEmailSender emailSender,
-            IHttpContextAccessor httpContextAccessor, ILeaveAllocationRepository leaveAllocationRepository, ILeaveTypeRepository leaveTypeRepository)
+            IHttpContextAccessor httpContextAccessor,
+            IUnitOfWork unitOfWork)
         {
-            _leaveRequestRepository = leaveRequestRepository;
             _mapper = mapper;
             _emailSender = emailSender;
             _httpContextAccessor = httpContextAccessor;
-            _leaveAllocationRepository = leaveAllocationRepository;
-            _leaveTypeRepository = leaveTypeRepository;
+
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<BaseCommandResponse> Handle(CreateLeaveRequestCommand request, CancellationToken cancellationToken)
         {
-            var validator = new CreateLeaveRequestDtoValidator(_leaveTypeRepository);
+            var validator = new CreateLeaveRequestDtoValidator(_unitOfWork.LeaveTypeRepository);
 
             var validationResult = await validator.ValidateAsync(request.LeaveRequestDto);
 
-            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(q => q.Type == "uid")?.Value;
+            var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(q => q.Type == CustomClaimTypes.Uid)?.Value;
 
-            //Get allocation
-            var allocation = await _leaveAllocationRepository.GetUserLeaveAllocations(userId, request.LeaveRequestDto.LeaveTypeId);
+            var allocation = await _unitOfWork.LeaveAllocationRepository.GetUserLeaveAllocations(userId, request.LeaveRequestDto.LeaveTypeId);
 
-            int daysRequested = (int)(request.LeaveRequestDto.EndDate - request.LeaveRequestDto.StartDate).TotalDays;
-
-            if (daysRequested > allocation.NumberOfDays)
+            if (allocation is null)
             {
-                validationResult.Errors.Add(new FluentValidation.Results.ValidationFailure(nameof(request.LeaveRequestDto.EndDate), "You dont have enoguh days" +
-                    "for this reques"));
+                validationResult.Errors.Add(new FluentValidation.Results.ValidationFailure(nameof(request.LeaveRequestDto.LeaveTypeId),
+                    "You dont have any allocations for this leave type"));
+            }
+            else
+            {
+                int daysRequested = (int)(request.LeaveRequestDto.EndDate - request.LeaveRequestDto.StartDate).TotalDays;
+
+                if (daysRequested > allocation.NumberOfDays)
+                {
+                    validationResult.Errors.Add(new FluentValidation.Results.ValidationFailure(nameof(request.LeaveRequestDto.EndDate), "You dont have enoguh days" +
+                        "for this reques"));
+                }
             }
 
             if (validationResult.IsValid == false)
@@ -68,47 +75,32 @@ namespace Application.Features.LeaveRequest.Handlers.Commands
 
                 return BaseCommandResponse.Failed(errors);
             }
-
-            var leaveRequest = _mapper.Map<Domain.LeaveRequest>(request.LeaveRequestDto);
-
-            leaveRequest.RequestingEmployeeId = userId;
-
-            leaveRequest = await _leaveRequestRepository.Add(leaveRequest);
-
-            var emailAddress = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-
-            var email = Email.LeaveRequestCreated(request.LeaveRequestDto, emailAddress);
-
-            try
+            else
             {
-                await _emailSender.SendEmail(email);
-            }
-            catch (Exception ex)
-            {
-                foreach (var error in validationResult.Errors)
+                var leaveRequest = _mapper.Map<Domain.LeaveRequest>(request.LeaveRequestDto);
+
+                leaveRequest.RequestingEmployeeId = userId;
+
+                leaveRequest = await _unitOfWork.LeaveRequestRepository.Add(leaveRequest);
+
+                await _unitOfWork.Save();
+
+                try
                 {
-                    Console.WriteLine(error.ErrorMessage);
+                    var emailAddress = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
+                    var email = Email.LeaveRequestCreated(request.LeaveRequestDto, emailAddress);
+
+                    await _emailSender.SendEmail(email);
                 }
-            }
-
-            return BaseCommandResponse.Successful(leaveRequest.Id);
-        }
-
-        public static void PrintObjectProperties(object obj)
-        {
-            if (obj == null)
-            {
-                Console.WriteLine("Object is null");
-                return;
-            }
-
-            Type type = obj.GetType();
-            PropertyInfo[] properties = type.GetProperties();
-
-            foreach (PropertyInfo property in properties)
-            {
-                object value = property.GetValue(obj, null);
-                Console.WriteLine($"{property.Name}: {value}");
+                catch (Exception ex)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        Console.WriteLine(error.ErrorMessage);
+                    }
+                }
+                return BaseCommandResponse.Successful(leaveRequest.Id);
             }
         }
     }
