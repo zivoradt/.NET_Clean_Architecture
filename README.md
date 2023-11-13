@@ -18,7 +18,7 @@ Key Learning Points
 - Implement Command Query Responsibility Segregation (CQRS) and Mediatr Pattern.
 - Add Email Service using SendGrid.
 - Efficient Exception Handling and Routing.
-- - Implement Unit Testing with Moq and Shouldy.
+- Implement Unit Testing with Moq and Shouldy.
 - Global Error Handling with Custom Middleware and Exceptions.
 - Adding Validation Using Fluent Validation.
 - Build a .NET Core API and MVC UI Application.
